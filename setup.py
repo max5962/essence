@@ -10,7 +10,7 @@ README = ""
 # This call to setup() does all the work
 setup(
     name="PrixCarburantClient",
-    version="1.0.2",
+    version="1.0.3",
     description="StationEssence client ",
     long_description=README,
     long_description_content_type="text/markdown",
