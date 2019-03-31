@@ -48,17 +48,24 @@ class PrixCarburantClient(object):
 
     def extractPrice(self, priceElement, type):
         valeur = 0
+        maj= ""
         try:
             xpath = ".//prix[@nom='" + type + "']"
             gazoilChild = priceElement.findall(xpath)
             valeur = gazoilChild[0].get("valeur")
+            maj = gazoilChild[0].get("maj")
         except BaseException:
             pass
         if valeur == 0:
             valeur = None
         else:
             valeur = float(valeur) / 1000
-        return valeur
+        
+        price = {
+            'valeur': str(valeur),
+            'maj': str(maj)
+        }
+        return price
 
     def loadStation(self, fileName):
         stations = {}
@@ -226,10 +233,10 @@ class StationEssence(object):
     name = ""
     adress = ""
     id = 0
-    gazoil = 0
-    e95 = 0
-    e98 = 0
-    e10 = 0
+    gazoil = {}
+    e95 = {}
+    e98 = {}
+    e10 = {}
 
     def __init__(self, name, adress, id, gazoil, e95, e98, e10):
         self.name = name
@@ -241,8 +248,10 @@ class StationEssence(object):
         self.e10 = e10
 
     def isClose(self):
-        return self.e95 is None and self.e98 is None and self.e10 is None and self.gazoil is None
+        boole=self.e95['valeur'] == "None" and self.e98['valeur'] == "None" and self.e10['valeur'] =="None" and self.gazoil['valeur'] == "None"
+        logging.debug(""+str(boole))
+        return boole
 
     def __str__(self):
         return "StationEssence:\n [\n - name : %s \n - adress : %s \n - id : %s \n - gazoil : %s \n - e95 : %s  \n - e98 : %s  \n - e10 : %s \n ]" % (
-            self.name, self.adress, self.id, self.gazoil, self.e95, self.e98, self.e10)
+            self.name, self.adress, self.id, self.gazoil['valeur'], self.e95['valeur'], self.e98['valeur'], self.e10['valeur'])
