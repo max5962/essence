@@ -144,7 +144,7 @@ class PrixCarburantClient(object):
                  "https://static.data.gouv.fr/resources/prix-des-carburants-en-france/20181117-111538/active-stations.csv",
                  "station.csv")
             self.stations = self.loadStation('station.csv')
-            self.downloadFile("https://donnees.roulez-eco.fr/opendata/jour",
+            self.downloadFile("https://donnees.roulez-eco.fr/opendata/instantane",
                           "PrixCarburants_instantane.zip")
             self.unzipFile("PrixCarburants_instantane.zip", '.')
             self.xmlData = "PrixCarburants_quotidien_" + \
@@ -152,7 +152,7 @@ class PrixCarburantClient(object):
             self.stationsXML = self.decodeXML(self.xmlData)
             self.lastUpdate = datetime.today().date()
         except:
-            logging.warning("Failed to download new data, will be retry ")
+            logging.warning("Failed to download new data, will retry later")
 
     def extractSpecificStation(self, listToExtract):
         stationsExtracted = {}
