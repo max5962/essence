@@ -27,6 +27,8 @@ class PrixCarburantClient(object):
     _XML_SP98_TAG = 'SP98'
     _XML_E10_TAG = 'E10'
     _XML_GAZOLE_TAG = 'Gazole'
+    _XML_E85_TAG = 'E85'
+    _XML_GPL_TAG = 'GPLc'
 
     def __init__(self, home_assistant_location, maxKM):
         self.homeAssistantLocation = home_assistant_location
@@ -179,7 +181,7 @@ class PrixCarburantClient(object):
             name = "undefined"
             address = elementxml.findall(
                 ".//adresse")[0].text + " " + elementxml.findall(".//ville")[0].text
-            #name, adress,id, gazoil, e95, e98,e10
+            #name, adress,id, gazoil, e95, e98,e10,e85, gplc
         object = StationEssence(
             name,
             address,
@@ -188,6 +190,8 @@ class PrixCarburantClient(object):
             self.extractPrice(elementxml, self._XML_SP95_TAG),
             self.extractPrice(elementxml, self._XML_SP98_TAG),
             self.extractPrice(elementxml, self._XML_E10_TAG))
+            self.extractPrice(elementxml, self._XML_E85_TAG))
+            self.extractPrice(elementxml, self._XML_GPL_TAG))
         if object.isClose():
             logging.debug("station is closed")
             raise Exception('Station is closed')
@@ -237,8 +241,10 @@ class StationEssence(object):
     e95 = {}
     e98 = {}
     e10 = {}
+    e85 = {}
+    gpl = {}
 
-    def __init__(self, name, adress, id, gazoil, e95, e98, e10):
+    def __init__(self, name, adress, id, gazoil, e95, e98, e10, e85, gpl):
         self.name = name
         self.adress = adress
         self.id = id
@@ -246,12 +252,14 @@ class StationEssence(object):
         self.e95 = e95
         self.e98 = e98
         self.e10 = e10
+        self.e85 = e85
+        self.gpl = gpl
 
     def isClose(self):
-        boole=self.e95['valeur'] == "None" and self.e98['valeur'] == "None" and self.e10['valeur'] =="None" and self.gazoil['valeur'] == "None"
+        boole=self.e95['valeur'] == "None" and self.e98['valeur'] == "None" and self.e10['valeur'] =="None" and self.gazoil['valeur'] == "None" and self.e85['valeur'] == "None" and self.gpl['valeur'] == "None"
         logging.debug(""+str(boole))
         return boole
 
     def __str__(self):
-        return "StationEssence:\n [\n - name : %s \n - adress : %s \n - id : %s \n - gazoil : %s \n - e95 : %s  \n - e98 : %s  \n - e10 : %s \n ]" % (
-            self.name, self.adress, self.id, self.gazoil['valeur'], self.e95['valeur'], self.e98['valeur'], self.e10['valeur'])
+        return "StationEssence:\n [\n - name : %s \n - adress : %s \n - id : %s \n - gazoil : %s \n - e95 : %s  \n - e98 : %s  \n - e10 : %s \n - e85 : %s \n - gplc : %s \n]" % (
+            self.name, self.adress, self.id, self.gazoil['valeur'], self.e95['valeur'], self.e98['valeur'], self.e10['valeur'], self.e85['valeur'], self.gpl['valeur'])
