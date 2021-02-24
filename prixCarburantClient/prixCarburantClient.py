@@ -189,8 +189,8 @@ class PrixCarburantClient(object):
             self.extractPrice(elementxml, self._XML_GAZOLE_TAG),
             self.extractPrice(elementxml, self._XML_SP95_TAG),
             self.extractPrice(elementxml, self._XML_SP98_TAG),
-            self.extractPrice(elementxml, self._XML_E10_TAG)),
-            self.extractPrice(elementxml, self._XML_E85_TAG)),
+            self.extractPrice(elementxml, self._XML_E10_TAG),
+            self.extractPrice(elementxml, self._XML_E85_TAG),
             self.extractPrice(elementxml, self._XML_GPL_TAG))
         if object.isClose():
             logging.debug("station is closed")
