@@ -7,6 +7,7 @@ import logging
 import sys
 import csv
 import os
+import shutil
 
 
 """
@@ -127,7 +128,8 @@ class PrixCarburantClient(object):
     def removeFile(self, file):
         logging.debug("Removing tempory file ")
         logging.debug("   file : " + file)
-        os.remove(file)
+        if os.path.exists(file):
+          os.remove(file)
 
     def reloadIfNecessary(self):
         today = datetime.today().date()
@@ -148,8 +150,8 @@ class PrixCarburantClient(object):
             self.stations = self.loadStation('station.csv')
             self.downloadFile("https://donnees.roulez-eco.fr/opendata/jour",
                           "PrixCarburants_instantane.zip")
-            self.unzipFile("PrixCarburants_instantane.zip", '.')
-            self.xmlData = "PrixCarburants_quotidien_" + \
+            self.unzipFile("PrixCarburants_instantane.zip", './PrixCarburantsData')
+            self.xmlData = "./PrixCarburantsData/PrixCarburants_quotidien_" + \
                  aDaybefore.strftime("%Y%m%d") + ".xml"
             self.stationsXML = self.decodeXML(self.xmlData)
             self.lastUpdate = datetime.today().date()
@@ -221,6 +223,11 @@ class PrixCarburantClient(object):
         self.removeFile("station.csv")
         self.removeFile(self.xmlData)
         self.removeFile("PrixCarburants_instantane.zip")
+        try:
+          shutil.rmtree('./PrixCarburantsData')
+        except OSError as e:
+          logging.debug("Error: %s - %s." % (e.filename, e.strerror))
+
 
     def decodeXML(self, file):
         tree = ET.parse(file)
