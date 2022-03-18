@@ -66,7 +66,7 @@ class PrixCarburantClient(object):
         
         price = {
             'valeur': str(valeur),
-            'maj': str(maj)
+            'maj': datetime.fromisoformat(str(maj)).isoformat() if maj else str(maj)
         }
         return price
 
@@ -142,7 +142,6 @@ class PrixCarburantClient(object):
             return True
 
     def load(self):
-        aDaybefore = datetime.today() - timedelta(days=1)
         try:
             self.downloadFile(
                  "https://static.data.gouv.fr/resources/prix-des-carburants-en-france/20181117-111538/active-stations.csv",
