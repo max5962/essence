@@ -62,11 +62,11 @@ class PrixCarburantClient(object):
         if valeur == 0:
             valeur = None
         else:
-            valeur = float(valeur) / 1000
+            valeur = float(valeur)
         
         price = {
             'valeur': str(valeur),
-            'maj': str(maj)
+            'maj': datetime.fromisoformat(str(maj)).isoformat() if maj else str(maj)
         }
         return price
 
@@ -142,17 +142,15 @@ class PrixCarburantClient(object):
             return True
 
     def load(self):
-        aDaybefore = datetime.today() - timedelta(days=1)
         try:
             self.downloadFile(
                  "https://static.data.gouv.fr/resources/prix-des-carburants-en-france/20181117-111538/active-stations.csv",
                  "station.csv")
             self.stations = self.loadStation('station.csv')
-            self.downloadFile("https://donnees.roulez-eco.fr/opendata/jour",
+            self.downloadFile("https://donnees.roulez-eco.fr/opendata/instantane",
                           "PrixCarburants_instantane.zip")
             self.unzipFile("PrixCarburants_instantane.zip", './PrixCarburantsData')
-            self.xmlData = "./PrixCarburantsData/PrixCarburants_quotidien_" + \
-                 aDaybefore.strftime("%Y%m%d") + ".xml"
+            self.xmlData = "./PrixCarburantsData/PrixCarburants_instantane.xml"
             self.stationsXML = self.decodeXML(self.xmlData)
             self.lastUpdate = datetime.today().date()
         except:
